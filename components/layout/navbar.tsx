@@ -1,0 +1,194 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Menu, X, ChevronDown, Phone } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navItems = [
+    { label: "Home", href: "/" },
+    { label: "About Us", href: "/about" },
+    { label: "Services", href: "/services", hasDropdown: true },
+    { label: "Resources", href: "/resources", hasDropdown: true },
+    { label: "Contact", href: "/contact" },
+  ].map((item) => ({
+    ...item,
+    active:
+      item.href === "/"
+        ? pathname === "/"
+        : pathname.startsWith(item.href),
+  }));
+
+  return (
+    <header
+      className={cn(
+        "sticky top-0 z-[100] w-full transition-all duration-200 border-b",
+        isScrolled
+          ? "bg-surface/90 backdrop-blur-md border-border-custom/80 py-3 shadow-sm"
+          : "bg-surface border-border-custom/40 py-4"
+      )}
+    >
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        {/* Brand Logo */}
+        <Link href="/" className="flex items-center gap-3 group">
+          {/* Logo Mark */}
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-lg bg-muted-surface group-hover:scale-105 transition-transform duration-150">
+            <svg
+              className="w-8 h-8"
+              viewBox="0 0 40 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Compass circle */}
+              <circle
+                cx="20"
+                cy="20"
+                r="14"
+                stroke="var(--color-primary)"
+                strokeWidth="3"
+                strokeDasharray="60 20"
+                className="rotate-45 origin-center"
+              />
+              {/* Airplane/growth dynamic arrow */}
+              <path
+                d="M12 28L28 12M28 12H20M28 12V20"
+                stroke="var(--color-accent)"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          {/* Logo Text */}
+          <div className="flex flex-col">
+            <span className="text-lg font-extrabold tracking-wider text-primary leading-tight">
+              KLICK ONN
+            </span>
+            <span className="text-[9px] font-bold tracking-widest text-text-secondary leading-none">
+              FINVEST & AIR TRAVELS
+            </span>
+          </div>
+        </Link>
+
+        {/* Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center gap-8">
+          {navItems.map((item) => (
+            <div key={item.label} className="relative group">
+              <Link
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-1 text-sm font-medium py-2 transition-colors duration-150",
+                  item.active
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-text-secondary hover:text-primary"
+                )}
+              >
+                {item.label}
+                {item.hasDropdown && (
+                  <ChevronDown className="h-4 w-4 text-text-muted group-hover:text-primary transition-colors" />
+                )}
+              </Link>
+              {item.hasDropdown && (
+                <div className="absolute top-full left-0 mt-1 w-48 rounded-md border border-border-custom bg-surface py-1 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[200]">
+                  <Link
+                    href="#"
+                    className="block px-4 py-2 text-xs text-text-secondary hover:bg-muted-surface hover:text-primary"
+                  >
+                    Overview
+                  </Link>
+                  <Link
+                    href="#"
+                    className="block px-4 py-2 text-xs text-text-secondary hover:bg-muted-surface hover:text-primary"
+                  >
+                    Detailed Services
+                  </Link>
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+
+        {/* Action Buttons */}
+        <div className="hidden lg:flex items-center gap-4">
+          <a
+            href="tel:+919501489757"
+            className="flex items-center justify-center w-11 h-11 rounded-full bg-muted-surface hover:bg-border-custom text-primary transition-colors duration-150"
+            title="Call Us"
+          >
+            <Phone className="h-5 w-5" />
+          </a>
+          <Button variant="primary" size="md">
+            Book Consultation &rarr;
+          </Button>
+        </div>
+
+        {/* Mobile menu trigger */}
+        <button
+          className="lg:hidden p-2 rounded-md hover:bg-muted-surface text-text-secondary"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Drawer Navigation */}
+      {isOpen && (
+        <div className="lg:hidden border-t border-border-custom bg-surface px-6 py-6 absolute top-full left-0 w-full shadow-lg z-[100] animate-in slide-in-from-top-4 duration-200">
+          <nav className="flex flex-col gap-4">
+            {navItems.map((item) => (
+              <div key={item.label} className="flex flex-col">
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "text-base font-medium py-1.5 transition-colors",
+                    item.active ? "text-primary font-semibold" : "text-text-secondary"
+                  )}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              </div>
+            ))}
+            <hr className="border-border-custom my-2" />
+            <div className="flex flex-col gap-3 pt-2">
+              <a
+                href="tel:+919501489757"
+                className="flex items-center gap-3 text-text-secondary font-medium py-1.5"
+              >
+                <Phone className="h-5 w-5 text-primary" />
+                +91 9501489757
+              </a>
+              <Button
+                variant="primary"
+                size="md"
+                className="w-full justify-center"
+                onClick={() => setIsOpen(false)}
+              >
+                Book Consultation &rarr;
+              </Button>
+            </div>
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
