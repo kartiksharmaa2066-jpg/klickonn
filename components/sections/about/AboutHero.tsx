@@ -8,7 +8,7 @@ import { ArrowRight, Phone } from "lucide-react";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const } },
 };
 
 export function AboutHero() {
@@ -84,7 +84,7 @@ export function AboutHero() {
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
+            transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const, delay: 0.15 }}
             viewport={{ once: true, margin: "-80px" }}
             className="lg:col-span-5 flex flex-col gap-5"
           >
