@@ -32,22 +32,27 @@ This document tracks the progress of the Klick ONN Finvest & Air Travels platfor
 - [x] Build reusable button component (`components/ui/button.tsx`)
 - [x] Build core utility helper (`lib/utils.ts` — `cn` className merger)
 - [x] Build `CanvasHeroImage` client component for black-pixel masking (`components/ui/CanvasHeroImage.tsx`)
+- [x] Add glassmorphism utility classes to `globals.css` (`.glass`, `.glass-dark`, `.glass-white`, `.glass-shadow`)
 
 ### [/] Phase 4 — Public Website
 - [x] Home page layout & sections
   - [x] `Navbar` — sticky, responsive with mobile drawer
-  - [x] `Hero` — headline, tagline, dual CTAs, trust grid, `CanvasHeroImage`
-  - [x] `Services` — 6-card grid (Investments, Travel, Insurance, Visa, Forex, Corporate)
-  - [x] `WhyChooseUs` — personalized, expert, end-to-end, wide network
-  - [x] `CTASection` — dark blue banner with consultation CTA
+  - [x] `Hero` — redesigned with `hero.jpeg` background wash, centered layout, glassmorphism trust bar, wave divider
+  - [x] `Services` — 6-card glassmorphism grid (Investments, Travel, Insurance, Visa, Forex, Corporate)
+  - [x] `WhyChooseUs` — glassmorphism feature cards, left heading + right 4-feature grid
+  - [x] `CTASection` — dark blue banner with glassmorphism calendar icon, dashed flight path, Book Consultation CTA
   - [x] `Footer` — brand, links, services, resources, legal, contact columns
+  - [x] Landing page updated to match `design.jpeg` reference — glassmorphism applied across all sections
+  - [x] All fabricated statistics and fake data removed (AGENTS.md Golden Rules compliance)
+  - [x] Added `framer-motion` dependency
+  - [x] Implemented scroll-triggered entry, stagger, and hover animations across all landing page components (Hero, Services, WhyChooseUs, CTASection) and Navbar/Footer
 - [x] About page content
   - [x] `AboutHero` — page hero with CTA and identity card
   - [x] `AboutMission` — Mission & Vision section
   - [x] `AboutValues` — 6 core values grid
   - [x] `AboutServices` — confirmed services overview by category
   - [x] `AboutCTA` — dark-banner CTA (Call + Book Consultation)
-- [ ] Services catalog & detail pages
+- [x] Services catalog & detail pages
 - [ ] Contact & Legal pages
 
 ### [ ] Phase 5 — Business Features

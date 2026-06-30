@@ -5,7 +5,7 @@ import { Phone, MessageCircle } from "lucide-react";
 
 export function AboutCTA() {
   return (
-    <section className="w-full bg-background py-12 md:py-16">
+    <section className="w-full bg-background py-12 md:py-20">
       <div className="max-w-7xl mx-auto px-6">
         {/* Banner container — matches CTASection style */}
         <div className="relative w-full bg-primary text-text-inverse rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden shadow-lg">

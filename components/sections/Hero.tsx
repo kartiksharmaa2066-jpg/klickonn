@@ -1,75 +1,128 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { CanvasHeroImage } from "@/components/ui/CanvasHeroImage";
-import { ShieldCheck, UserCheck, Clock, ShieldAlert, ArrowRight } from "lucide-react";
+import { ShieldCheck, UserCheck, Clock, Lock, ArrowRight, Calendar } from "lucide-react";
 
 export function Hero() {
   const trustItems = [
-    { icon: <ShieldCheck className="h-4.5 w-4.5 text-secondary shrink-0" />, label: "Reliable Solutions" },
-    { icon: <UserCheck className="h-4.5 w-4.5 text-secondary shrink-0" />, label: "Expert Guidance" },
-    { icon: <Clock className="h-4.5 w-4.5 text-secondary shrink-0" />, label: "Hassle-Free Experience" },
-    { icon: <ShieldCheck className="h-4.5 w-4.5 text-secondary shrink-0" />, label: "Complete Transparency" },
+    { icon: <ShieldCheck className="h-5 w-5 text-white shrink-0" />, label: "Reliable Solutions" },
+    { icon: <UserCheck className="h-5 w-5 text-white shrink-0" />, label: "Expert Guidance" },
+    { icon: <Clock className="h-5 w-5 text-white shrink-0" />, label: "Hassle-Free Experience" },
+    { icon: <Lock className="h-5 w-5 text-white shrink-0" />, label: "Complete Transparency" },
   ];
 
   return (
-    <section className="relative w-full bg-linear-to-b from-surface via-background to-surface overflow-hidden pt-12 lg:pt-20 pb-20">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-        {/* Left Content Column */}
-        <div className="lg:col-span-6 flex flex-col gap-6 text-left z-10">
-          {/* Tagline */}
-          <div className="flex items-center gap-2.5 text-xs font-bold uppercase tracking-widest text-secondary">
-            <span className="w-8 h-[2px] bg-secondary inline-block"></span>
-            YOUR DREAMS, OUR COMMITMENT
-          </div>
+    <section className="relative w-full overflow-hidden">
+      {/* Hero image — full colour, full bleed */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/hero.jpeg"
+          alt="Klick ONN — Finance, Travel and Peace of Mind"
+          fill
+          priority
+          className="object-cover object-top"
+          sizes="100vw"
+        />
+        {/* Dark tint — increased for better text contrast */}
+        <div className="absolute inset-0 bg-black/50" />
+        {/* Subtle bottom fade into the page */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      </div>
 
-          {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight text-text-primary leading-[1.15]">
-            One Destination for <br className="hidden sm:inline" />
-            <span className="text-primary">Your Finance, Travel &amp; </span>
-            <span className="text-primary">Peace of Mind.</span>
-          </h1>
+      {/* Main hero content — centered */}
+      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-20 pb-10 text-center flex flex-col items-center gap-6">
 
-          {/* Description */}
-          <p className="text-base sm:text-lg text-text-secondary leading-relaxed max-w-xl">
-            Expert solutions for investments, travel, insurance, visas and more — all
-            under one trusted partner. We simplify complex decisions for your security
-            and leisure.
-          </p>
+        {/* Tagline */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest text-white/90"
+        >
+          <span className="w-8 h-[2px] bg-white/70 inline-block" />
+          YOUR DREAMS, OUR COMMITMENT
+          <span className="w-8 h-[2px] bg-white/70 inline-block" />
+        </motion.div>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 mt-2">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto font-semibold">
+        {/* Main heading */}
+        <motion.h1
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.6, ease: "easeOut" }}
+          className="text-4xl sm:text-5xl lg:text-[58px] font-extrabold tracking-tight text-white leading-[1.12] drop-shadow-md"
+        >
+          One Destination for{" "}
+          <br className="hidden sm:inline" />
+          <span className="text-sky-200">Your Finance, Travel &amp; </span>
+          <br className="hidden sm:inline" />
+          <span className="text-sky-200">Peace</span>
+          {" "}of Mind.
+        </motion.h1>
+
+        {/* Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.55, ease: "easeOut" }}
+          className="text-base sm:text-lg text-white/85 leading-relaxed max-w-xl drop-shadow-sm"
+        >
+          Expert solutions for investments, travel, insurance, visas and
+          more — all under one trusted partner.
+        </motion.p>
+
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.32, duration: 0.5, ease: "easeOut" }}
+          className="flex flex-col sm:flex-row gap-4"
+        >
+          <Link href="/services" className="w-full sm:w-auto">
+            <Button variant="primary" size="lg" className="font-semibold shadow-lg bg-secondary hover:bg-secondary/90 w-full sm:w-auto">
               Explore Services <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto font-semibold">
+          </Link>
+          {/* Glassmorphism outline button */}
+          <Link href="/contact" className="w-full sm:w-auto">
+            <button className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 rounded-xl font-semibold text-white border border-white/30 bg-white/15 backdrop-blur-md hover:bg-white/25 transition-all duration-200 text-base shadow-md">
+              <Calendar className="h-4 w-4 text-white" />
               Book Consultation
-            </Button>
-          </div>
+            </button>
+          </Link>
+        </motion.div>
+      </div>
 
-          {/* Trust Items Grid */}
-          <div className="grid grid-cols-2 gap-y-4 gap-x-6 mt-8 pt-8 border-t border-border-custom/80 max-w-lg">
-            {trustItems.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-2.5">
-                {item.icon}
-                <span className="text-xs sm:text-sm font-semibold text-text-secondary">
-                  {item.label}
-                </span>
-              </div>
-            ))}
-          </div>
+      {/* Trust bar — glassmorphism pill */}
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45, duration: 0.55, ease: "easeOut" }}
+        className="relative z-10 max-w-3xl mx-auto px-6 pb-0"
+      >
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px rounded-2xl overflow-hidden border border-white/25 bg-white/10 backdrop-blur-md shadow-xl">
+          {trustItems.map((item, idx) => (
+            <div
+              key={idx}
+              className="flex flex-col items-center justify-center gap-2 px-4 py-5 bg-white/10 hover:bg-white/20 transition-colors duration-200"
+            >
+              {item.icon}
+              <span className="text-xs sm:text-sm font-semibold text-white text-center leading-snug">
+                {item.label}
+              </span>
+            </div>
+          ))}
         </div>
+      </motion.div>
 
-        {/* Right Image Column */}
-        <div className="lg:col-span-6 flex items-center justify-center relative w-full aspect-[4/3] lg:aspect-square max-w-[550px] lg:max-w-none mx-auto lg:mx-0">
-          {/* Visual gradient background */}
-          <div className="absolute inset-0 bg-radial-gradient from-secondary/5 to-transparent rounded-full filter blur-2xl scale-95" />
-          
-          <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-xs flex items-center justify-center bg-transparent">
-            <CanvasHeroImage className="w-full h-full object-cover" />
-          </div>
-        </div>
+      {/* Wave divider */}
+      <div className="relative z-10 w-full leading-none mt-0">
+        <svg viewBox="0 0 1440 72" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full block">
+          <path d="M0 72 Q360 10 720 40 Q1080 70 1440 20 L1440 72 Z" fill="var(--color-background)" />
+        </svg>
       </div>
     </section>
   );

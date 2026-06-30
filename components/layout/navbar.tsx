@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -39,54 +40,25 @@ export function Navbar() {
   }));
 
   return (
-    <header
+    <motion.header
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
       className={cn(
-        "sticky top-0 z-[100] w-full transition-all duration-200 border-b",
+        "sticky top-0 z-[100] w-full transition-all duration-300 border-b",
         isScrolled
-          ? "bg-surface/90 backdrop-blur-md border-border-custom/80 py-3 shadow-sm"
-          : "bg-surface border-border-custom/40 py-4"
+          ? "bg-white/80 backdrop-blur-xl border-white/40 py-[7px] shadow-lg ring-1 ring-inset ring-white/60"
+          : "bg-white/60 backdrop-blur-md border-border-custom/30 py-[8px]"
       )}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          {/* Logo Mark */}
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-lg bg-muted-surface group-hover:scale-105 transition-transform duration-150">
-            <svg
-              className="w-8 h-8"
-              viewBox="0 0 40 40"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Compass circle */}
-              <circle
-                cx="20"
-                cy="20"
-                r="14"
-                stroke="var(--color-primary)"
-                strokeWidth="3"
-                strokeDasharray="60 20"
-                className="rotate-45 origin-center"
-              />
-              {/* Airplane/growth dynamic arrow */}
-              <path
-                d="M12 28L28 12M28 12H20M28 12V20"
-                stroke="var(--color-accent)"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          {/* Logo Text */}
-          <div className="flex flex-col">
-            <span className="text-lg font-extrabold tracking-wider text-primary leading-tight">
-              KLICK ONN
-            </span>
-            <span className="text-[9px] font-bold tracking-widest text-text-secondary leading-none">
-              FINVEST & AIR TRAVELS
-            </span>
-          </div>
+        <Link href="/" className="flex items-center group">
+          <img
+            src="/logo-new.jpeg"
+            alt="Klick ONN Finvest & Air Travels"
+            className="w-[155px] lg:w-[195px] h-auto object-contain group-hover:scale-105 transition-transform duration-150"
+          />
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -110,16 +82,16 @@ export function Navbar() {
               {item.hasDropdown && (
                 <div className="absolute top-full left-0 mt-1 w-48 rounded-md border border-border-custom bg-surface py-1 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[200]">
                   <Link
-                    href="#"
+                    href={item.href}
                     className="block px-4 py-2 text-xs text-text-secondary hover:bg-muted-surface hover:text-primary"
                   >
                     Overview
                   </Link>
                   <Link
-                    href="#"
+                    href="/contact"
                     className="block px-4 py-2 text-xs text-text-secondary hover:bg-muted-surface hover:text-primary"
                   >
-                    Detailed Services
+                    Contact Us
                   </Link>
                 </div>
               )}
@@ -136,9 +108,11 @@ export function Navbar() {
           >
             <Phone className="h-5 w-5" />
           </a>
-          <Button variant="primary" size="md">
-            Book Consultation &rarr;
-          </Button>
+          <Link href="/contact">
+            <Button variant="primary" size="md">
+              Book Consultation &rarr;
+            </Button>
+          </Link>
         </div>
 
         {/* Mobile menu trigger */}
@@ -151,8 +125,14 @@ export function Navbar() {
       </div>
 
       {/* Mobile Drawer Navigation */}
+      <AnimatePresence>
       {isOpen && (
-        <div className="lg:hidden border-t border-border-custom bg-surface px-6 py-6 absolute top-full left-0 w-full shadow-lg z-[100] animate-in slide-in-from-top-4 duration-200">
+        <motion.div
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
+          className="lg:hidden border-t border-white/40 bg-white/80 backdrop-blur-xl px-6 py-6 absolute top-full left-0 w-full shadow-xl z-[100]">
           <nav className="flex flex-col gap-4">
             {navItems.map((item) => (
               <div key={item.label} className="flex flex-col">
@@ -177,18 +157,21 @@ export function Navbar() {
                 <Phone className="h-5 w-5 text-primary" />
                 +91 9501489757
               </a>
-              <Button
-                variant="primary"
-                size="md"
-                className="w-full justify-center"
-                onClick={() => setIsOpen(false)}
-              >
-                Book Consultation &rarr;
-              </Button>
+              <Link href="/contact" className="w-full">
+                <Button
+                  variant="primary"
+                  size="md"
+                  className="w-full justify-center"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Book Consultation &rarr;
+                </Button>
+              </Link>
             </div>
           </nav>
-        </div>
+        </motion.div>
       )}
-    </header>
+      </AnimatePresence>
+    </motion.header>
   );
 }

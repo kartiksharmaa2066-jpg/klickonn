@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import { Navbar } from "@/components/layout/navbar";
 import { Hero } from "@/components/sections/Hero";
 import { Services } from "@/components/sections/Services";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
 import { CTASection } from "@/components/sections/CTASection";
 import { Footer } from "@/components/layout/footer";
+
+export const metadata: Metadata = {
+  title: "Klick ONN Finvest & Air Travels | Financial & Travel Consultancy",
+  description:
+    "Your trusted partner for investments, travel, insurance, visas and more. Expert financial and travel consultancy services.",
+};
 
 export default function Home() {
   return (

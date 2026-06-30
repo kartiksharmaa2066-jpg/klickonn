@@ -1,49 +1,30 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
-import { Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-surface border-t border-border-custom pt-16 pb-8">
+    <motion.footer
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="w-full bg-white/70 backdrop-blur-md border-t border-white/60 ring-1 ring-inset ring-white/40 pt-16 pb-8 shadow-inner"
+    >
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
         {/* Brand Column */}
         <div className="lg:col-span-2 flex flex-col gap-5">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted-surface">
-              <svg
-                className="w-8 h-8"
-                viewBox="0 0 40 40"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle
-                  cx="20"
-                  cy="20"
-                  r="14"
-                  stroke="var(--color-primary)"
-                  strokeWidth="3"
-                  strokeDasharray="60 20"
-                  className="rotate-45 origin-center"
-                />
-                <path
-                  d="M12 28L28 12M28 12H20M28 12V20"
-                  stroke="var(--color-accent)"
-                  strokeWidth="3.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-extrabold tracking-wider text-primary leading-tight">
-                KLICK ONN
-              </span>
-              <span className="text-[9px] font-bold tracking-widest text-text-secondary leading-none">
-                FINVEST & AIR TRAVELS
-              </span>
-            </div>
+          <Link href="/" className="flex items-center">
+            <img
+              src="/logo-new.jpeg"
+              alt="Klick ONN Finvest & Air Travels"
+              className="w-[160px] h-auto object-contain"
+            />
           </Link>
           <p className="text-sm leading-relaxed text-text-secondary pr-4">
             Your trusted partner for investments, travel, insurance, visas and more.
@@ -59,6 +40,7 @@ export function Footer() {
                   </svg>
                 ),
                 label: "Facebook",
+                href: "#",
               },
               {
                 icon: (
@@ -69,6 +51,7 @@ export function Footer() {
                   </svg>
                 ),
                 label: "Instagram",
+                href: "#",
               },
               {
                 icon: (
@@ -79,12 +62,13 @@ export function Footer() {
                   </svg>
                 ),
                 label: "LinkedIn",
+                href: "#",
               },
-              { icon: <Mail className="h-4 w-4" />, label: "Email" },
+              { icon: <Mail className="h-4 w-4" />, label: "Email", href: "mailto:info@klickonnfinvest.com" },
             ].map((social, idx) => (
               <a
                 key={idx}
-                href="#"
+                href={social.href}
                 className="flex items-center justify-center w-9 h-9 rounded-full border border-border-custom hover:bg-primary hover:text-text-inverse hover:border-primary text-text-secondary transition-all duration-150"
                 aria-label={social.label}
               >
@@ -100,13 +84,18 @@ export function Footer() {
             Company
           </h4>
           <nav className="flex flex-col gap-2.5">
-            {["About Us", "Our Advisors", "Careers", "Contact Us"].map((link) => (
+            {[
+              { label: "About Us", href: "/about" },
+              { label: "Our Advisors", href: "/about" },
+              { label: "Careers", href: "/contact" },
+              { label: "Contact Us", href: "/contact" },
+            ].map((link) => (
               <Link
-                key={link}
-                href="#"
+                key={link.label}
+                href={link.href}
                 className="text-sm text-text-secondary hover:text-primary transition-colors"
               >
-                {link}
+                {link.label}
               </Link>
             ))}
           </nav>
@@ -119,19 +108,19 @@ export function Footer() {
           </h4>
           <nav className="flex flex-col gap-2.5">
             {[
-              "Investments",
-              "Travel",
-              "Insurance",
-              "Visa Services",
-              "Forex",
-              "Corporate Solutions",
+              { label: "Investments", href: "/services" },
+              { label: "Travel", href: "/services" },
+              { label: "Insurance", href: "/services" },
+              { label: "Visa Services", href: "/services" },
+              { label: "Forex", href: "/services" },
+              { label: "Corporate Solutions", href: "/services" },
             ].map((link) => (
               <Link
-                key={link}
-                href="#"
+                key={link.label}
+                href={link.href}
                 className="text-sm text-text-secondary hover:text-primary transition-colors"
               >
-                {link}
+                {link.label}
               </Link>
             ))}
           </nav>
@@ -143,13 +132,18 @@ export function Footer() {
             Resources
           </h4>
           <nav className="flex flex-col gap-2.5">
-            {["Blog", "Guides", "FAQs", "Travel Tips"].map((link) => (
+            {[
+              { label: "Blog", href: "/resources" },
+              { label: "Guides", href: "/resources" },
+              { label: "FAQs", href: "/resources" },
+              { label: "Travel Tips", href: "/resources" },
+            ].map((link) => (
               <Link
-                key={link}
-                href="#"
+                key={link.label}
+                href={link.href}
                 className="text-sm text-text-secondary hover:text-primary transition-colors"
               >
-                {link}
+                {link.label}
               </Link>
             ))}
           </nav>
@@ -177,7 +171,7 @@ export function Footer() {
             </a>
             <div className="flex items-start gap-2.5 text-sm text-text-secondary">
               <MapPin className="h-4.5 w-4.5 text-primary shrink-0 mt-0.5" />
-              <span>Mumbai, India</span>
+              <span>14, 2nd Floor, Highway Homes, Dhakoli, Zirakpur, SAS Nagar 160104</span>
             </div>
           </div>
         </div>
@@ -189,17 +183,17 @@ export function Footer() {
           &copy; {currentYear} Klick ONN Finvest & Air Travels. All rights reserved.
         </p>
         <div className="flex items-center gap-6">
-          <Link href="#" className="text-xs text-text-muted hover:text-primary">
+          <Link href="/privacy" className="text-xs text-text-muted hover:text-primary">
             Privacy Policy
           </Link>
-          <Link href="#" className="text-xs text-text-muted hover:text-primary">
+          <Link href="/terms" className="text-xs text-text-muted hover:text-primary">
             Terms & Conditions
           </Link>
-          <Link href="#" className="text-xs text-text-muted hover:text-primary">
+          <Link href="/refund" className="text-xs text-text-muted hover:text-primary">
             Refund Policy
           </Link>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

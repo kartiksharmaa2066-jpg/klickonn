@@ -41,3 +41,59 @@ body {
   color: var(--color-text-primary);
   font-family: var(--font-sans);
 }
+
+/* ─── Glassmorphism utilities ─────────────────────────────── */
+
+/* Frosted glass card — light */
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+/* Frosted glass card — dark (for use on dark/image backgrounds) */
+.glass-dark {
+  background: rgba(11, 60, 145, 0.25);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+}
+
+/* Frosted white overlay for hero content panels */
+.glass-white {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* Smooth glow shadow for glassmorphism cards */
+.glass-shadow {
+  box-shadow:
+    0 8px 32px 0 rgba(11, 60, 145, 0.08),
+    0 2px 8px 0 rgba(37, 99, 235, 0.06),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* ─── Subtle scroll-based animation helper ────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.5s ease-out forwards;
+}
+
+/* ─── Hero wave divider ───────────────────────────────────── */
+.hero-wave svg {
+  display: block;
+  width: 100%;
+}
