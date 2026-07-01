@@ -47,8 +47,8 @@ export function Navbar() {
       className={cn(
         "sticky top-0 z-[100] w-full transition-all duration-300 border-b",
         isScrolled
-          ? "bg-white/80 backdrop-blur-xl border-white/40 py-[7px] shadow-lg ring-1 ring-inset ring-white/60"
-          : "bg-white/60 backdrop-blur-md border-border-custom/30 py-[8px]"
+          ? "bg-white/80 backdrop-blur-xl border-white/40 py-[5px] sm:py-[7px] shadow-lg ring-1 ring-inset ring-white/60"
+          : "bg-white/60 backdrop-blur-md border-border-custom/30 py-[5px] sm:py-[8px]"
       )}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -57,7 +57,7 @@ export function Navbar() {
           <img
             src="/logo-new.jpeg"
             alt="Klick ONN Finvest & Air Travels"
-            className="w-[155px] lg:w-[195px] h-auto object-contain group-hover:scale-105 transition-transform duration-150"
+            className="w-[130px] sm:w-[155px] lg:w-[195px] h-auto object-contain group-hover:scale-105 transition-transform duration-150"
           />
         </Link>
 

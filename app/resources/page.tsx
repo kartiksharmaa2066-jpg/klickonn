@@ -14,7 +14,6 @@ export const metadata: Metadata = {
   description:
     "Explore expert insights, guides, and tools to help you make smart financial and travel decisions. Investment guides, travel tips, visa checklists, and more.",
 };
-
 export default function ResourcesPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background">

@@ -10,6 +10,8 @@ import {
   MessageSquare,
   Send,
   MapPin,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 
 const officeDetails = [
@@ -98,6 +100,8 @@ export function ContactInfo() {
     subject: "",
     message: "",
   });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -105,9 +109,33 @@ export function ContactInfo() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Form submission logic would go here
+    if (status === "loading") return;
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setStatus("success");
+        setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+      } else {
+        setStatus("error");
+        setErrorMsg(data.error || "Something went wrong. Please try again later.");
+      }
+    } catch {
+      setStatus("error");
+      setErrorMsg("Something went wrong. Please try again later.");
+    }
   };
 
   return (
@@ -128,6 +156,19 @@ export function ContactInfo() {
               </h2>
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                {/* Status Messages */}
+                {status === "success" && (
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-success/10 border border-success/20 text-sm text-success">
+                    <CheckCircle className="h-4 w-4 shrink-0" />
+                    Your message has been sent successfully!
+                  </div>
+                )}
+                {status === "error" && (
+                  <div className="flex items-center gap-2 p-3 rounded-lg bg-error/10 border border-error/20 text-sm text-error">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    {errorMsg}
+                  </div>
+                )}
                 {/* Name + Email row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
@@ -241,8 +282,9 @@ export function ContactInfo() {
                   type="submit"
                   size="lg"
                   className="w-full font-bold mt-2"
+                  disabled={status === "loading"}
                 >
-                  Send Message <Send className="h-4 w-4 ml-1" />
+                  {status === "loading" ? "Sending..." : "Send Message"} <Send className="h-4 w-4 ml-1" />
                 </Button>
               </form>
             </div>

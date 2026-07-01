@@ -1,46 +1,44 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Download, FileText, Plane, BookOpen, Briefcase } from "lucide-react";
+import {
+  ArrowRight,
+  Download,
+  FileText,
+  Plane,
+  BookOpen,
+  Briefcase,
+  Loader2,
+} from "lucide-react";
 
-const articles = [
-  {
-    category: "Investment",
-    categoryColor: "bg-secondary/10 text-secondary",
-    title: "SIP vs Lump Sum: Which is Better for Wealth Creation?",
-    date: "May 28, 2026",
-    readTime: "6 min read",
-    image: "/hero.jpeg",
-  },
-  {
-    category: "Travel",
-    categoryColor: "bg-info/10 text-info",
-    title: "Essential Travel Insurance Tips for International Trips",
-    date: "May 24, 2026",
-    readTime: "5 min read",
-    image: "/services.jpeg",
-  },
-  {
-    category: "Finance",
-    categoryColor: "bg-success/10 text-success",
-    title: "Top 5 Tax Saving Investments for FY 2026-27",
-    date: "May 20, 2026",
-    readTime: "6 min read",
-    image: "/design.jpeg",
-  },
-  {
-    category: "Visa Guide",
-    categoryColor: "bg-warning/10 text-warning",
-    title: "Schengen Visa Checklist: Documents You Need",
-    date: "May 18, 2026",
-    readTime: "5 min read",
-    image: "/hero.jpeg",
-  },
-];
+type Resource = {
+  id: number;
+  title: string;
+  slug: string;
+  category: string;
+  description: string;
+  content: string | null;
+  imageUrl: string | null;
+  pdfUrl: string | null;
+  readTime: string | null;
+  published: boolean;
+  createdAt: string | null;
+};
+
+const categoryColors: Record<string, string> = {
+  Investment: "bg-secondary/10 text-secondary",
+  Travel: "bg-info/10 text-info",
+  Finance: "bg-success/10 text-success",
+  "Visa Guide": "bg-warning/10 text-warning",
+  Insurance: "bg-accent/10 text-accent",
+  "Tax Planning": "bg-primary/10 text-primary",
+  Retirement: "bg-secondary/10 text-secondary",
+  General: "bg-muted-surface text-text-secondary",
+};
 
 const popularResources = [
   {
@@ -85,6 +83,17 @@ const fadeUp = {
 };
 
 export function LatestArticles() {
+  const [articles, setArticles] = useState<Resource[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/resources")
+      .then((res) => res.json())
+      .then((data) => setArticles(data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <section className="w-full bg-background py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-6">
@@ -102,56 +111,95 @@ export function LatestArticles() {
               <h2 className="text-2xl md:text-3xl font-extrabold text-text-primary tracking-tight">
                 Latest Articles
               </h2>
-              <Link
-                href="#"
-                className="flex items-center gap-1.5 text-sm font-semibold text-secondary hover:text-primary transition-colors"
-              >
-                View All Articles <ArrowRight className="h-4 w-4" />
-              </Link>
             </motion.div>
 
-            {/* Article Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {articles.map((article, idx) => (
-                <motion.div
-                  key={article.title}
-                  custom={idx}
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: "-60px" }}
-                  whileHover={{ y: -6, transition: { duration: 0.2 } }}
-                  className="group bg-surface rounded-xl border border-border-custom overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer"
-                >
-                  {/* Article Image */}
-                  <div className="relative h-44 overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10" />
-                    <Image
-                      src={article.image}
-                      alt={article.title}
-                      width={400}
-                      height={200}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    {/* Category Badge */}
-                    <span className={`absolute top-3 left-3 z-20 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${article.categoryColor}`}>
-                      {article.category}
-                    </span>
-                  </div>
-                  {/* Article Content */}
-                  <div className="p-5 flex flex-col gap-2.5">
-                    <h3 className="text-base font-bold text-text-primary leading-snug group-hover:text-secondary transition-colors line-clamp-2">
-                      {article.title}
-                    </h3>
-                    <div className="flex items-center gap-3 text-xs text-text-muted">
-                      <span>{article.date}</span>
-                      <span className="w-1 h-1 rounded-full bg-text-muted" />
-                      <span>{article.readTime}</span>
+            {/* Loading */}
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="h-6 w-6 text-primary animate-spin" />
+              </div>
+            ) : articles.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center justify-center py-20 gap-4 bg-surface rounded-2xl border border-border-custom"
+              >
+                <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-muted-surface">
+                  <FileText className="h-8 w-8 text-text-muted" />
+                </div>
+                <h3 className="text-xl font-bold text-text-primary">No Articles Yet</h3>
+                <p className="text-sm text-text-secondary text-center max-w-md">
+                  Check back soon — we&apos;re working on creating valuable resources for you.
+                </p>
+              </motion.div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {articles.map((article, idx) => (
+                  <motion.div
+                    key={article.id}
+                    custom={idx}
+                    variants={fadeUp}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-60px" }}
+                    whileHover={{ y: -6, transition: { duration: 0.2 } }}
+                    className="group bg-surface rounded-xl border border-border-custom overflow-hidden shadow-sm hover:shadow-lg transition-shadow cursor-pointer flex flex-col"
+                  >
+                    {/* Article Image */}
+                    <div className="relative h-44 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10" />
+                      {article.imageUrl ? (
+                        <Image
+                          src={article.imageUrl}
+                          alt={article.title}
+                          width={400}
+                          height={200}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-muted-surface flex items-center justify-center">
+                          <FileText className="h-12 w-12 text-text-muted/30" />
+                        </div>
+                      )}
+                      {/* Category Badge */}
+                      <span
+                        className={`absolute top-3 left-3 z-20 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                          categoryColors[article.category] || categoryColors.General
+                        }`}
+                      >
+                        {article.category}
+                      </span>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+                    {/* Article Content */}
+                    <div className="p-5 flex flex-col gap-2.5 flex-1">
+                      <h3 className="text-base font-bold text-text-primary leading-snug group-hover:text-secondary transition-colors line-clamp-2">
+                        {article.title}
+                      </h3>
+                      <p className="text-xs text-text-secondary leading-relaxed line-clamp-2">
+                        {article.description}
+                      </p>
+                      <div className="flex items-center gap-3 text-xs text-text-muted mt-auto">
+                        {article.readTime && (
+                          <>
+                            <span>{article.readTime}</span>
+                            <span className="w-1 h-1 rounded-full bg-text-muted" />
+                          </>
+                        )}
+                        <span>
+                          {article.createdAt
+                            ? new Date(article.createdAt).toLocaleDateString("en-IN", {
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })
+                            : ""}
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Sidebar — Popular Resources */}
@@ -176,7 +224,9 @@ export function LatestArticles() {
                     viewport={{ once: true, margin: "-40px" }}
                     className="flex items-start gap-4 p-4 bg-surface rounded-xl border border-border-custom hover:shadow-md transition-shadow cursor-pointer group"
                   >
-                    <div className={`flex items-center justify-center w-11 h-11 rounded-xl shrink-0 ${resource.iconBg}`}>
+                    <div
+                      className={`flex items-center justify-center w-11 h-11 rounded-xl shrink-0 ${resource.iconBg}`}
+                    >
                       {resource.icon}
                     </div>
                     <div className="flex flex-col gap-1 flex-1 min-w-0">
