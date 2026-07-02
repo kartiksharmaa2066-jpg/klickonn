@@ -43,9 +43,14 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
-  } catch {
+  } catch (error) {
+    console.error("AUTH ERROR:", error);
+
     return NextResponse.json(
-      { error: "Something went wrong" },
+      {
+        error: "Something went wrong",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }
