@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -16,11 +16,12 @@ import {
   RefreshCw,
   Inbox,
   ArrowLeft,
-  FileText,
   FolderOpen,
+  Globe,
 } from "lucide-react";
 import { LoginPage } from "./LoginPage";
 import { ResourcesManager } from "./ResourcesManager";
+import { SourcesManager } from "./SourcesManager";
 
 type Submission = {
   id: number;
@@ -32,7 +33,7 @@ type Submission = {
   createdAt: string | null;
 };
 
-type Tab = "submissions" | "resources";
+type Tab = "submissions" | "resources" | "sources";
 
 export default function AdminPage() {
   const { confirm } = useConfirm();
@@ -159,6 +160,17 @@ export default function AdminPage() {
             <FolderOpen className="h-4 w-4" />
             Resources
           </button>
+          <button
+            onClick={() => setActiveTab("sources")}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+              activeTab === "sources"
+                ? "bg-surface text-text-primary shadow-sm"
+                : "text-text-secondary hover:text-text-primary"
+            }`}
+          >
+            <Globe className="h-4 w-4" />
+            Sources
+          </button>
         </div>
 
         {/* Submissions Tab */}
@@ -266,6 +278,9 @@ export default function AdminPage() {
 
         {/* Resources Tab */}
         {activeTab === "resources" && <ResourcesManager />}
+
+        {/* Sources Tab */}
+        {activeTab === "sources" && <SourcesManager />}
       </main>
     </div>
   );

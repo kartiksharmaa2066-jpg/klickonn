@@ -1,12 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyRequestAuth } from "@/lib/auth";
 
-export async function GET(request: Request) {
-  const cookie = request.headers.get("cookie") || "";
-  const hasAuth = cookie.includes("admin_auth=authenticated");
-
-  if (hasAuth) {
+export async function GET(request: NextRequest) {
+  if (verifyRequestAuth(request)) {
     return NextResponse.json({ authenticated: true });
   }
-
   return NextResponse.json({ authenticated: false }, { status: 401 });
 }

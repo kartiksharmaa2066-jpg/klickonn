@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { UserCheck, Award, Handshake, Globe } from "lucide-react";
@@ -65,7 +64,7 @@ export function WhyChooseUs() {
             {/* Glassmorphism highlight card */}
             <div className="mt-1 p-5 rounded-2xl border border-white/60 bg-white/50 backdrop-blur-md shadow-md ring-1 ring-inset ring-white/70">
               <p className="text-sm text-text-secondary leading-relaxed italic">
-                "Every recommendation we make is based on your specific situation — not a generic template."
+                &ldquo;Every recommendation we make is based on your specific situation — not a generic template.&rdquo;
               </p>
             </div>
 

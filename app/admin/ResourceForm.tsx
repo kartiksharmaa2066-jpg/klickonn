@@ -8,11 +8,11 @@ import {
   Upload,
   FileText,
   Loader2,
-  CheckCircle,
   AlertCircle,
   Image as ImageIcon,
   Trash2,
   Eye,
+  Star,
 } from "lucide-react";
 
 type Resource = {
@@ -26,6 +26,7 @@ type Resource = {
   pdfUrl: string | null;
   readTime: string | null;
   published: boolean;
+  featured: boolean;
   createdAt: string | null;
   updatedAt: string | null;
 };
@@ -54,6 +55,7 @@ export function ResourceForm({ resource, onClose, onSaved }: Props) {
   const [content, setContent] = useState(resource?.content || "");
   const [readTime, setReadTime] = useState(resource?.readTime || "");
   const [published, setPublished] = useState(resource?.published ?? false);
+  const [featured, setFeatured] = useState(resource?.featured ?? false);
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -163,6 +165,7 @@ export function ResourceForm({ resource, onClose, onSaved }: Props) {
         pdfUrl: finalPdfUrl || null,
         readTime: readTime || null,
         published,
+        featured,
       };
 
       if (resource) {
@@ -424,6 +427,34 @@ export function ResourceForm({ resource, onClose, onSaved }: Props) {
               <p className="text-xs text-text-muted">
                 {published ? "Visible on the resources page" : "Only visible in admin dashboard"}
               </p>
+            </div>
+          </div>
+
+          {/* Featured Toggle */}
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-muted-surface/30 border border-border-custom/50">
+            <button
+              type="button"
+              onClick={() => setFeatured(!featured)}
+              className={`relative w-11 h-6 rounded-full transition-colors shrink-0 ${
+                featured ? "bg-warning" : "bg-border-custom"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${
+                  featured ? "translate-x-5" : ""
+                }`}
+              />
+            </button>
+            <div className="flex items-center gap-2">
+              <Star className={`h-4 w-4 ${featured ? "text-warning fill-warning" : "text-text-muted"}`} />
+              <div>
+                <span className="text-sm text-text-primary font-medium">
+                  {featured ? "Featured" : "Mark as Featured"}
+                </span>
+                <p className="text-xs text-text-muted">
+                  {featured ? "Appears in Popular Resources sidebar" : "Show in Popular Resources sidebar"}
+                </p>
+              </div>
             </div>
           </div>
 

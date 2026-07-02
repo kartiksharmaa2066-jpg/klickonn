@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -53,7 +52,7 @@ export function CTASection() {
                 Ready to Take the Next Step?
               </h3>
               <p className="text-sm sm:text-base text-white/80 max-w-md font-medium">
-                Let's plan your financial future and next journey together.
+                Let&apos;s plan your financial future and next journey together.
               </p>
             </div>
           </div>

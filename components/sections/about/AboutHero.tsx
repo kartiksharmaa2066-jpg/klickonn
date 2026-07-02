@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone } from "lucide-react";
@@ -10,6 +10,12 @@ const fadeUp = {
   hidden: { opacity: 0, y: 18 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const } },
 };
+
+const keyFacts = [
+  { label: "Business Type", value: "Financial & Travel Consultancy" },
+  { label: "Services", value: "Investments, Insurance, Travel, Visa & More" },
+  { label: "Tagline", value: "Your Dreams, Our Commitment" },
+];
 
 export function AboutHero() {
   return (
@@ -91,20 +97,18 @@ export function AboutHero() {
             {/* Identity card */}
             <div className="bg-surface rounded-2xl border border-border-custom shadow-xs p-8 flex flex-col gap-6">
               <div className="flex items-center gap-3 pb-5 border-b border-border-custom/60">
-                <img
+                <Image
                   src="/logo-new.jpeg"
                   alt="Klick ONN Finvest & Air Travels"
+                  width={160}
+                  height={40}
                   className="w-[160px] h-auto object-contain"
                 />
               </div>
 
               {/* Key facts */}
               <div className="grid grid-cols-1 gap-4">
-                {[
-                  { label: "Business Type", value: "Financial & Travel Consultancy" },
-                  { label: "Services", value: "Investments, Insurance, Travel, Visa & More" },
-                  { label: "Tagline", value: "Your Dreams, Our Commitment" },
-                ].map((fact) => (
+                {keyFacts.map((fact) => (
                   <div key={fact.label} className="flex flex-col gap-0.5">
                     <span className="text-xs font-bold uppercase tracking-widest text-text-muted">
                       {fact.label}

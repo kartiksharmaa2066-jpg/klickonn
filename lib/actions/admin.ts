@@ -1,8 +1,9 @@
 "use server";
 
+import { verifyServerActionAuth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { contactSubmissions } from "@/lib/db/schema";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export type Submission = {
   id: number;
@@ -15,6 +16,9 @@ export type Submission = {
 };
 
 export async function getAllSubmissions(): Promise<Submission[]> {
+  if (!(await verifyServerActionAuth())) {
+    throw new Error("Unauthorized");
+  }
   return db
     .select()
     .from(contactSubmissions)
@@ -22,10 +26,12 @@ export async function getAllSubmissions(): Promise<Submission[]> {
 }
 
 export async function deleteSubmission(id: number): Promise<{ success: boolean }> {
+  if (!(await verifyServerActionAuth())) {
+    throw new Error("Unauthorized");
+  }
   try {
-    const { eq } = await import("drizzle-orm");
-    await db.delete(contactSubmissions).where(eq(contactSubmissions.id, id));
-    return { success: true };
+    const result = await db.delete(contactSubmissions).where(eq(contactSubmissions.id, id)).returning();
+    return { success: result.length > 0 };
   } catch (err) {
     console.error("Delete error:", err);
     return { success: false };

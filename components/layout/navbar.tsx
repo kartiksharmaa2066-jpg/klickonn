@@ -1,12 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Services", href: "/services", hasDropdown: true },
+  { label: "Resources", href: "/resources", hasDropdown: true },
+  { label: "Contact", href: "/contact" },
+];
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,29 +24,23 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = [
-    { label: "Home", href: "/" },
-    { label: "About Us", href: "/about" },
-    { label: "Services", href: "/services", hasDropdown: true },
-    { label: "Resources", href: "/resources", hasDropdown: true },
-    { label: "Contact", href: "/contact" },
-  ].map((item) => ({
-    ...item,
-    active:
-      item.href === "/"
-        ? pathname === "/"
-        : pathname.startsWith(item.href),
-  }));
+  const navItems = useMemo(
+    () =>
+      navLinks.map((item) => ({
+        ...item,
+        active:
+          item.href === "/"
+            ? pathname === "/"
+            : pathname.startsWith(item.href),
+      })),
+    [pathname]
+  );
 
   return (
     <motion.header
@@ -54,9 +57,12 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center group">
-          <img
+          <Image
             src="/logo-new.jpeg"
             alt="Klick ONN Finvest & Air Travels"
+            width={195}
+            height={40}
+            priority
             className="w-[130px] sm:w-[155px] lg:w-[195px] h-auto object-contain group-hover:scale-105 transition-transform duration-150"
           />
         </Link>

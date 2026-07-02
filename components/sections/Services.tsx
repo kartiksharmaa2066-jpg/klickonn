@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { TrendingUp, Plane, Shield, FileText, CircleDollarSign, Briefcase, ArrowRight } from "lucide-react";

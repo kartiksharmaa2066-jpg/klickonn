@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
 import { ServiceDetailCard } from "@/components/ui/ServiceDetailCard";
 import { PlaneTakeoff, Hotel, FileText, Map, Building2 } from "lucide-react";

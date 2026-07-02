@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -17,12 +17,15 @@ import {
   Loader2,
   Download,
   Search,
-  Filter,
   Image as ImageIcon,
   Calendar,
   Clock,
   LayoutGrid,
   List,
+  Cloud,
+  CheckCircle2,
+  AlertCircle,
+  Star,
 } from "lucide-react";
 import { ResourceForm } from "./ResourceForm";
 
@@ -37,6 +40,7 @@ type Resource = {
   pdfUrl: string | null;
   readTime: string | null;
   published: boolean;
+  featured: boolean;
   createdAt: string | null;
   updatedAt: string | null;
 };
@@ -63,6 +67,17 @@ export function ResourcesManager() {
   const [filterStatus, setFilterStatus] = useState<"all" | "published" | "draft">("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [deleting, setDeleting] = useState<number | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<{
+    lastSync: {
+      status: string;
+      filesAdded: number;
+      filesUpdated: number;
+      filesDeleted: number;
+      createdAt: string;
+    } | null;
+    driveFileCount: number;
+  } | null>(null);
 
   const fetchResources = useCallback(async () => {
     setLoading(true);
@@ -79,9 +94,43 @@ export function ResourcesManager() {
     }
   }, []);
 
+  const fetchSyncStatus = useCallback(async () => {
+    try {
+      const res = await fetch("/api/resources/sync");
+      if (res.ok) {
+        const data = await res.json();
+        setSyncStatus(data);
+      }
+    } catch {
+      // Sync status not available
+    }
+  }, []);
+
+  const handleSync = async () => {
+    setSyncing(true);
+    try {
+      const res = await fetch("/api/resources/sync", { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(
+          `Sync complete: ${data.filesAdded} added, ${data.filesUpdated} updated, ${data.filesDeleted} unpublished`
+        );
+        fetchResources();
+        fetchSyncStatus();
+      } else {
+        toast.error(data.error || "Sync failed");
+      }
+    } catch {
+      toast.error("Sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   useEffect(() => {
     fetchResources();
-  }, [fetchResources]);
+    fetchSyncStatus();
+  }, [fetchResources, fetchSyncStatus]);
 
   const handleDelete = async (id: number) => {
     const ok = await confirm({
@@ -122,6 +171,22 @@ export function ResourcesManager() {
     }
   };
 
+  const handleToggleFeatured = async (resource: Resource) => {
+    const res = await fetch("/api/resources/update", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: resource.id, featured: !resource.featured }),
+    });
+    if (res.ok) {
+      setResources((prev) =>
+        prev.map((r) => (r.id === resource.id ? { ...r, featured: !r.featured } : r))
+      );
+      toast.success(resource.featured ? "Removed from Featured" : "Added to Featured");
+    } else {
+      toast.error("Failed to update resource");
+    }
+  };
+
   const handleEdit = (resource: Resource) => {
     setEditingResource(resource);
     setShowForm(true);
@@ -133,23 +198,30 @@ export function ResourcesManager() {
     fetchResources();
   };
 
-  const allCategories = ["All", ...Array.from(new Set(resources.map((r) => r.category)))];
+  const allCategories = useMemo(
+    () => ["All", ...Array.from(new Set(resources.map((r) => r.category)))],
+    [resources]
+  );
 
-  const filtered = resources.filter((r) => {
-    const matchSearch =
-      search === "" ||
-      r.title.toLowerCase().includes(search.toLowerCase()) ||
-      r.description.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = filterCategory === "All" || r.category === filterCategory;
-    const matchStatus =
-      filterStatus === "all" ||
-      (filterStatus === "published" && r.published) ||
-      (filterStatus === "draft" && !r.published);
-    return matchSearch && matchCategory && matchStatus;
-  });
+  const filtered = useMemo(
+    () =>
+      resources.filter((r) => {
+        const matchSearch =
+          search === "" ||
+          r.title.toLowerCase().includes(search.toLowerCase()) ||
+          r.description.toLowerCase().includes(search.toLowerCase());
+        const matchCategory = filterCategory === "All" || r.category === filterCategory;
+        const matchStatus =
+          filterStatus === "all" ||
+          (filterStatus === "published" && r.published) ||
+          (filterStatus === "draft" && !r.published);
+        return matchSearch && matchCategory && matchStatus;
+      }),
+    [resources, search, filterCategory, filterStatus]
+  );
 
-  const publishedCount = resources.filter((r) => r.published).length;
-  const draftCount = resources.filter((r) => !r.published).length;
+  const publishedCount = useMemo(() => resources.filter((r) => r.published).length, [resources]);
+  const draftCount = useMemo(() => resources.filter((r) => !r.published).length, [resources]);
 
   return (
     <div>
@@ -183,6 +255,66 @@ export function ResourcesManager() {
           </div>
         </div>
       </div>
+
+      {/* Sync Status Bar */}
+      {syncStatus && (
+        <div className="flex items-center justify-between px-4 py-3 mb-6 rounded-xl bg-surface border border-border-custom">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              {syncStatus.lastSync?.status === "success" ? (
+                <CheckCircle2 className="h-4 w-4 text-success" />
+              ) : syncStatus.lastSync?.status === "error" ? (
+                <AlertCircle className="h-4 w-4 text-error" />
+              ) : (
+                <Cloud className="h-4 w-4 text-text-muted" />
+              )}
+              <span className="text-sm font-medium text-text-primary">
+                Google Drive Sync
+              </span>
+            </div>
+            <div className="flex items-center gap-3 text-xs text-text-muted">
+              <span>{syncStatus.driveFileCount} files in Drive</span>
+              {syncStatus.lastSync && (
+                <>
+                  <span className="text-border-custom">|</span>
+                  <span>
+                    Last sync:{" "}
+                    {new Date(syncStatus.lastSync.createdAt).toLocaleString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                  {syncStatus.lastSync.filesAdded > 0 && (
+                    <span className="text-success">+{syncStatus.lastSync.filesAdded} added</span>
+                  )}
+                  {syncStatus.lastSync.filesUpdated > 0 && (
+                    <span className="text-info">{syncStatus.lastSync.filesUpdated} updated</span>
+                  )}
+                  {syncStatus.lastSync.filesDeleted > 0 && (
+                    <span className="text-warning">{syncStatus.lastSync.filesDeleted} unpublished</span>
+                  )}
+                </>
+              )}
+              {!syncStatus.lastSync && <span>No syncs yet</span>}
+            </div>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleSync}
+            disabled={syncing}
+          >
+            {syncing ? (
+              <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
+            ) : (
+              <Cloud className="h-4 w-4 mr-1.5" />
+            )}
+            {syncing ? "Syncing..." : "Sync Now"}
+          </Button>
+        </div>
+      )}
 
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -312,7 +444,12 @@ export function ResourcesManager() {
                       {resource.category}
                     </span>
                   </div>
-                  <div className="absolute top-2.5 right-2.5">
+                  <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5">
+                    {resource.featured && (
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-warning text-white">
+                        Featured
+                      </span>
+                    )}
                     <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${
                       resource.published ? "bg-success text-white" : "bg-text-muted/80 text-white"
                     }`}>
@@ -357,6 +494,15 @@ export function ResourcesManager() {
                       title={resource.published ? "Unpublish" : "Publish"}
                     >
                       {resource.published ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                    </button>
+                    <button
+                      onClick={() => handleToggleFeatured(resource)}
+                      className={`p-1.5 rounded-md hover:bg-muted-surface transition-colors ${
+                        resource.featured ? "text-warning" : "text-text-muted hover:text-warning"
+                      }`}
+                      title={resource.featured ? "Remove from Featured" : "Mark as Featured"}
+                    >
+                      <Star className={`h-3.5 w-3.5 ${resource.featured ? "fill-warning" : ""}`} />
                     </button>
                     <button
                       onClick={() => handleEdit(resource)}
@@ -422,6 +568,11 @@ export function ResourcesManager() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <h3 className="text-sm font-bold text-text-primary truncate">{resource.title}</h3>
+                    {resource.featured && (
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-warning/10 text-warning shrink-0">
+                        Featured
+                      </span>
+                    )}
                     <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider shrink-0 ${
                       resource.published ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
                     }`}>
@@ -447,6 +598,15 @@ export function ResourcesManager() {
                     title={resource.published ? "Unpublish" : "Publish"}
                   >
                     {resource.published ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                  </button>
+                  <button
+                    onClick={() => handleToggleFeatured(resource)}
+                    className={`p-1.5 rounded-md hover:bg-muted-surface transition-colors ${
+                      resource.featured ? "text-warning" : "text-text-muted hover:text-warning"
+                    }`}
+                    title={resource.featured ? "Remove from Featured" : "Mark as Featured"}
+                  >
+                    <Star className={`h-3.5 w-3.5 ${resource.featured ? "fill-warning" : ""}`} />
                   </button>
                   <button
                     onClick={() => handleEdit(resource)}

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
 import { TrendingUp, Calculator, Receipt, Plane, FileCheck, Shield, BarChart3 } from "lucide-react";
 

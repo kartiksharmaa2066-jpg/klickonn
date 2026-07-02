@@ -1,19 +1,19 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, UserCheck, Clock, Lock, ArrowRight, Calendar } from "lucide-react";
 
+const trustItems = [
+  { icon: <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5 text-white shrink-0" />, label: "Reliable Solutions" },
+  { icon: <UserCheck className="h-4 w-4 sm:h-5 sm:w-5 text-white shrink-0" />, label: "Expert Guidance" },
+  { icon: <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-white shrink-0" />, label: "Hassle-Free Experience" },
+  { icon: <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-white shrink-0" />, label: "Complete Transparency" },
+];
+
 export function Hero() {
-  const trustItems = [
-    { icon: <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5 text-white shrink-0" />, label: "Reliable Solutions" },
-    { icon: <UserCheck className="h-4 w-4 sm:h-5 sm:w-5 text-white shrink-0" />, label: "Expert Guidance" },
-    { icon: <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-white shrink-0" />, label: "Hassle-Free Experience" },
-    { icon: <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-white shrink-0" />, label: "Complete Transparency" },
-  ];
 
   return (
     <section className="relative w-full overflow-hidden">

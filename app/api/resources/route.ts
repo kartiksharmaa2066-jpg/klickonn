@@ -1,26 +1,48 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { verifyRequestAuth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { resources } from "@/lib/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, and } from "drizzle-orm";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const all = searchParams.get("all");
+  const featured = searchParams.get("featured");
 
   if (all === "true") {
-    const cookie = request.headers.get("cookie") || "";
-    if (!cookie.includes("admin_auth=authenticated")) {
+    if (!verifyRequestAuth(request)) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const rows = await db.select().from(resources).orderBy(desc(resources.createdAt));
-    return NextResponse.json(rows);
+    try {
+      const rows = await db.select().from(resources).orderBy(desc(resources.createdAt));
+      return NextResponse.json(rows);
+    } catch {
+      return NextResponse.json({ error: "Failed to fetch resources" }, { status: 500 });
+    }
   }
 
-  const rows = await db
-    .select()
-    .from(resources)
-    .where(eq(resources.published, true))
-    .orderBy(desc(resources.createdAt));
+  if (featured === "true") {
+    try {
+      const rows = await db
+        .select()
+        .from(resources)
+        .where(and(eq(resources.published, true), eq(resources.featured, true)))
+        .orderBy(desc(resources.createdAt))
+        .limit(5);
+      return NextResponse.json(rows);
+    } catch {
+      return NextResponse.json({ error: "Failed to fetch featured resources" }, { status: 500 });
+    }
+  }
 
-  return NextResponse.json(rows);
+  try {
+    const rows = await db
+      .select()
+      .from(resources)
+      .where(eq(resources.published, true))
+      .orderBy(desc(resources.createdAt));
+    return NextResponse.json(rows);
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch resources" }, { status: 500 });
+  }
 }
