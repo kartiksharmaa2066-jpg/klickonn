@@ -14,12 +14,14 @@ export async function POST(request: Request) {
     }
 
     const ip = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
-    const { allowed } = checkRateLimit(`login:${ip}`, 5, 15 * 60 * 1000);
-    if (!allowed) {
-      return NextResponse.json(
-        { error: "Too many login attempts. Please try again later." },
-        { status: 429 }
-      );
+    if (process.env.NODE_ENV !== "development") {
+      const { allowed } = checkRateLimit(`login:${ip}`, 5, 15 * 60 * 1000);
+      if (!allowed) {
+        return NextResponse.json(
+          { error: "Too many login attempts. Please try again later." },
+          { status: 429 }
+        );
+      }
     }
 
     const adminUsername = process.env.ADMIN_USERNAME;
